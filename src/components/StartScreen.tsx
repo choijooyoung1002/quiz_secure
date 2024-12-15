@@ -14,7 +14,7 @@ export const StartScreen = ({ onStart, isSerialConnected, setIsSerialConnected, 
 
   const { connect } = useWebSerial((color: string) => {
     console.log('StartScreen에서 수신한 색상:', color);
-    setSerialHandler(color); // Fixed: directly pass the handler
+    setSerialHandler(color);
   });
 
   const handleConnect = async () => {

@@ -5,27 +5,30 @@ import Confetti from 'react-confetti';
 interface QuizQuestionProps {
   question: Question;
   onAnswer: (index: number) => void;
-  currentColor: string | null;
+  currentColor: { color: string, timestamp: number } | null;
 }
 
 export const QuizQuestion = ({ question, onAnswer, currentColor }: QuizQuestionProps) => {
   const buttonColors = [
-    "border-red-700 text-red-400 hover:bg-red-900/30",
-    "border-blue-700 text-blue-400 hover:bg-blue-900/30",
-    "border-green-700 text-green-400 hover:bg-green-900/30",
-    "border-yellow-700 text-yellow-400 hover:bg-yellow-900/30"
+    "border-red-700 text-red-400 hover:bg-red-900/30",     // 빨강
+    "border-green-700 text-green-400 hover:bg-green-900/30", // 초록
+    "border-yellow-700 text-yellow-400 hover:bg-yellow-900/30", // 노랑
+    "border-blue-700 text-blue-400 hover:bg-blue-900/30"    // 파랑
   ];
 
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [isWrong, setIsWrong] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [prevColor, setPrevColor] = useState<string | null>(null);
 
   useEffect(() => {
     if (currentColor) {
-      const colorIndex = { 'R': 0, 'G': 2, 'B': 1, 'Y': 3 }[currentColor];
+      // 색상 매핑 순서: 빨초노파
+      const colorIndex = { 'R': 0, 'G': 1, 'Y': 2, 'B': 3 }[currentColor.color];
       if (colorIndex !== undefined) {
         buttonRefs.current[colorIndex]?.click();
       }
+      setPrevColor(currentColor.color);
     }
   }, [currentColor]);
 
