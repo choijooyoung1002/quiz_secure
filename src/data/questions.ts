@@ -1,27 +1,28 @@
 export interface Question {
-  id: number;
-  question: string;
+  text: string;
   options: string[];
-  correctAnswer: number;
+  correct: number;
 }
 
 export const questions: Question[] = [
   {
-    id: 1,
-    question: "What is the capital of France?",
+    text: "지정된 문서 분류 등급은?",
+    options: ["대외비", "2급 비밀", "1급 비밀", "극비"],
+    correct: 2
+  },
+  {
+    text: "What is the capital of France?",
     options: ["London", "Paris", "Berlin", "Madrid"],
-    correctAnswer: 1
+    correct: 1
   },
   {
-    id: 2,
-    question: "Which planet is known as the Red Planet?",
+    text: "Which planet is known as the Red Planet?",
     options: ["Venus", "Jupiter", "Mars", "Saturn"],
-    correctAnswer: 2
+    correct: 2
   },
   {
-    id: 3,
-    question: "What is the largest mammal in the world?",
+    text: "What is the largest mammal in the world?",
     options: ["African Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
-    correctAnswer: 1
+    correct: 1
   }
 ];

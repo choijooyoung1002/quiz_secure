@@ -1,38 +1,96 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { Question } from '../data/questions';
+import Confetti from 'react-confetti';
 
 interface QuizQuestionProps {
+  question: Question;
   onAnswer: (index: number) => void;
+  onColorReceived: (handler: (color: string) => void) => void;
 }
 
-const question = {
-  text: "What is the capital of France?",
-  options: ["London", "Paris", "Berlin", "Madrid"]
-};
+export const QuizQuestion = ({ question, onAnswer, onColorReceived }: QuizQuestionProps) => {
+  const buttonColors = [
+    "border-red-700 text-red-400 hover:bg-red-900/30",
+    "border-blue-700 text-blue-400 hover:bg-blue-900/30",
+    "border-green-700 text-green-400 hover:bg-green-900/30",
+    "border-yellow-700 text-yellow-400 hover:bg-yellow-900/30"
+  ];
 
-const colors = [
-  'bg-red-500 hover:bg-red-600',
-  'bg-blue-500 hover:bg-blue-600',
-  'bg-green-500 hover:bg-green-600',
-  'bg-yellow-500 hover:bg-yellow-600'
-];
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [isWrong, setIsWrong] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-export const QuizQuestion = ({ onAnswer }: QuizQuestionProps) => {
+  useEffect(() => {
+    const colorHandler = (color: string) => {
+      const colorIndex = {
+        'R': 0, 'G': 2, 'B': 1, 'Y': 3
+      }[color];
+      
+      if (colorIndex !== undefined) {
+        buttonRefs.current[colorIndex]?.click();
+      }
+    };
+
+    onColorReceived(colorHandler);
+  }, [onColorReceived]);
+
+  const handleAnswer = (index: number) => {
+    if (index === question.correct) {
+      setShowConfetti(true);
+      setTimeout(() => {
+        setShowConfetti(false);
+        onAnswer(index);
+      }, 3000);
+    } else {
+      setIsWrong(true);
+      setTimeout(() => setIsWrong(false), 820); // 애니메이션 시간
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-4xl">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold mb-8 text-center">{question.text}</h2>
+    <div className={`min-h-screen bg-black flex items-center justify-center transition-colors duration-300
+                    ${isWrong ? 'bg-red-900/30 animate-shake' : ''}`}>
+      {showConfetti && <Confetti />}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,50,0,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(0,50,0,0.2)_1px,transparent_1px)] bg-[size:25px_25px]" />
+      
+      {/* CRT 스캔라인 효과 */}
+      <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[size:100%_2px] pointer-events-none" />
+    
+      <div className="relative z-10 bg-black/80 p-8 border-2 border-green-700 w-full max-w-3xl">
+        {/* 상단 상태 표시 */}
+        <div className="border border-green-700 bg-black/50 text-green-500 px-4 py-2 mb-6 text-sm font-mono flex justify-between">
+          <span>SECURITY QUESTIONNAIRE</span>
+          <span>CLEARANCE CHECK IN PROGRESS</span>
+        </div>
+
+        <div className="border border-green-700 p-6 bg-black/50">
+          <h2 className="text-2xl font-mono text-green-500 mb-8 ">
+            {'>'} {question.text}
+          </h2>
+          
           <div className="grid grid-cols-2 gap-4">
             {question.options.map((option, index) => (
               <button
                 key={index}
-                onClick={() => onAnswer(index)}
-                className={`${colors[index]} text-white p-6 rounded-lg text-lg font-semibold transition-transform hover:scale-105`}
+                ref={el => buttonRefs.current[index] = el}
+                onClick={() => handleAnswer(index)}
+                className={`border-2 bg-black/50 p-4 
+                         font-mono transition-colors
+                         flex items-center justify-center text-left
+                         ${buttonColors[index]}`}
               >
+                <span className="mr-2">[{String.fromCharCode(65 + index)}]</span>
                 {option}
               </button>
             ))}
           </div>
+        </div>
+
+        {/* 하단 상태 표시 */}
+        <div className="mt-4 text-xs font-mono text-green-600 flex justify-between">
+          <span>STATUS: ACTIVE</span>
+          <span>REMAINING: 3</span>
+          <span>SESSION: #7749</span>
         </div>
       </div>
     </div>
