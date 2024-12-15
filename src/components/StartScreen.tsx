@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { useWebSerial } from '../hooks/useWebSerial';
 
 interface StartScreenProps {
   onStart: () => void;
   isSerialConnected: boolean;
-  onSerialConnect: () => Promise<void>;
+  setIsSerialConnected: (isConnected: boolean) => void;
+  setSerialHandler: (handler: (color: string) => void) => void;
 }
 
-export const StartScreen = ({ onStart, isSerialConnected, onSerialConnect }: StartScreenProps) => {
+export const StartScreen = ({ onStart, isSerialConnected, setIsSerialConnected, setSerialHandler }: StartScreenProps) => {
   const [text, setText] = useState('');
   const fullText = '>> 최고 기밀 :: 보안 레벨 4 접근 요청 <<';
 
+  const { connect } = useWebSerial((color: string) => {
+    console.log('StartScreen에서 수신한 색상:', color);
+    setSerialHandler(color); // Fixed: directly pass the handler
+  });
+
   const handleConnect = async () => {
     try {
-      await onSerialConnect();
+      await connect();
+      setIsSerialConnected(true);
+      console.log('시리얼 연결 성공');
     } catch (err) {
       console.error('시리얼 연결 실패:', err);
+      setIsSerialConnected(false);
     }
   };
 

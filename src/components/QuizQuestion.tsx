@@ -5,10 +5,10 @@ import Confetti from 'react-confetti';
 interface QuizQuestionProps {
   question: Question;
   onAnswer: (index: number) => void;
-  onColorReceived: (handler: (color: string) => void) => void;
+  currentColor: string | null;
 }
 
-export const QuizQuestion = ({ question, onAnswer, onColorReceived }: QuizQuestionProps) => {
+export const QuizQuestion = ({ question, onAnswer, currentColor }: QuizQuestionProps) => {
   const buttonColors = [
     "border-red-700 text-red-400 hover:bg-red-900/30",
     "border-blue-700 text-blue-400 hover:bg-blue-900/30",
@@ -21,18 +21,13 @@ export const QuizQuestion = ({ question, onAnswer, onColorReceived }: QuizQuesti
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    const colorHandler = (color: string) => {
-      const colorIndex = {
-        'R': 0, 'G': 2, 'B': 1, 'Y': 3
-      }[color];
-      
+    if (currentColor) {
+      const colorIndex = { 'R': 0, 'G': 2, 'B': 1, 'Y': 3 }[currentColor];
       if (colorIndex !== undefined) {
         buttonRefs.current[colorIndex]?.click();
       }
-    };
-
-    onColorReceived(colorHandler);
-  }, [onColorReceived]);
+    }
+  }, [currentColor]);
 
   const handleAnswer = (index: number) => {
     if (index === question.correct) {
