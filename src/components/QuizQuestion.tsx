@@ -49,6 +49,7 @@ export const QuizQuestion = ({ question, onAnswer, currentColor }: QuizQuestionP
     <div className={`min-h-screen bg-black flex items-center justify-center transition-colors duration-300
                     ${isWrong ? 'bg-red-900/30 animate-shake' : ''}`}>
       {showConfetti && <Confetti />}
+      <div className="scanlines"></div>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,50,0,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(0,50,0,0.2)_1px,transparent_1px)] bg-[size:25px_25px]" />
       
       {/* CRT 스캔라인 효과 */}
