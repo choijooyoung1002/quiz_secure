@@ -10,7 +10,7 @@ interface StartScreenProps {
 
 export const StartScreen = ({ onStart, isSerialConnected, setIsSerialConnected, setSerialHandler }: StartScreenProps) => {
   const [text, setText] = useState('');
-  const fullText = '>> 최고 기밀 :: 보안 레벨 4 접근 요청 <<';
+  const fullText = '>> 소프트 아이스크림 :: 보안 해제 요청 <<';
 
   const { connect } = useWebSerial((color: string) => {
     console.log('StartScreen에서 수신한 색상:', color);
